@@ -33,13 +33,28 @@ std::stringstream fakeFile(char c, Args... args) {
 
 TEST_SUIT_BEGIN
 
-TEST_CASE("text events") {
-    auto ss = fakeFile("\xff\x00\x02\x00\x08", 5);
+TEST_CASE("sequence number") {
+    auto ss = fakeFile("\x03\xff\x00\x02\x00\x08", 6);
 
     auto event = MetaEvent{ss};
 
+    ASSERT_EQ(event.delta(), 3);
     ASSERT_EQ(event.type(), MetaEvent::SequenceNumber);
     ASSERT_EQ(event.sequenceNumber(), 8);
+}
+
+TEST_CASE("text events") {
+    {
+        auto ss = fakeFile("\x04\xff\x01\x05"
+                           "hello",
+                           9);
+
+        auto event = MetaEvent{ss};
+
+        ASSERT_EQ(event.delta(), 4);
+        ASSERT_EQ(event.type(), MetaEvent::TextEvent);
+        ASSERT_EQ(event.text(), "hello");
+    }
 }
 
 TEST_SUIT_END

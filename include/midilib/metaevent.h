@@ -1,12 +1,16 @@
 #pragma once
 
+#include "event.h"
 #include <cstdint>
 #include <iosfwd>
+#include <string_view>
 #include <vector>
 
 namespace midilib {
 
-struct MetaEvent {
+struct MetaEvent : public Event {
+    MetaEvent(std::istream &file);
+
     // FF
     enum Type {
         SequenceNumber = 0x00,
@@ -20,28 +24,28 @@ struct MetaEvent {
         Marker = 0x06,
         CuePoint = 0x07,
 
-        EndOfTrack = 0x2F,
+        EndOfTrack = 0x2f,
+
+        Error = 0xffff,
+        NotImplemented = 0xffff - 1,
     };
 
-    Type type() {
-        return _type;
-    }
+    Type type() const;
 
-    size_t size() {
-        return _data.size();
-    }
+    // Get size of data
+    size_t size() const;
 
-    char *data() {
-        return _data.data();
-    }
-
-    Type _type;
-    std::vector<char> _data;
-
-    MetaEvent(std::istream &file);
+    // Get the raw data of the event
+    const char *data() const;
 
     // For sequence number event
-    uint16_t sequenceNumber();
+    uint16_t sequenceNumber() const;
+
+    std::string_view text() const;
+
+private:
+    Type _type = Error;
+    std::vector<char> _data;
 };
 
 } // namespace midilib

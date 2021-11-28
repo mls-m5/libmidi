@@ -13,16 +13,16 @@ ResultType readInt(const char *data, ResultType *retPtr = 0) {
 
     auto ret = LoadType{};
 
-    if constexpr (std::endian::native == std::endian::little) {
-        for (size_t i = 0; i < size; ++i) {
-            char c = data[i];
-            ret <<= 8;
-            ret += c;
-        }
+    //    if constexpr (std::endian::native == std::endian::little) {
+    for (size_t i = 0; i < size; ++i) {
+        char c = data[i];
+        ret <<= 8;
+        ret += c;
     }
-    else {
-        std::memcpy(&ret, data, size);
-    }
+    //    }
+    //    else {
+    //        std::memcpy(&ret, data, size);
+    //    }
 
     if (retPtr) {
         return *retPtr = static_cast<ResultType>(ret);
@@ -45,17 +45,17 @@ ResultType readInt(std::istream &stream, ResultType *retPtr = 0) {
 
     auto ret = LoadType{};
 
-    if constexpr (std::endian::native == std::endian::little) {
-        for (size_t i = 0; i < size; ++i) {
-            char c;
-            stream.read(&c, 1);
-            ret <<= 8;
-            ret += c;
-        }
+    //    if constexpr (std::endian::native == std::endian::little) {
+    for (size_t i = 0; i < size; ++i) {
+        char c;
+        stream.read(&c, 1);
+        ret <<= 8;
+        ret += c;
     }
-    else {
-        stream.read(&ret, size);
-    }
+    //    }
+    //    else {
+    //        stream.read(&ret, size);
+    //    }
 
     if (retPtr) {
         return *retPtr = static_cast<ResultType>(ret);
@@ -63,5 +63,7 @@ ResultType readInt(std::istream &stream, ResultType *retPtr = 0) {
 
     return static_cast<ResultType>(ret);
 }
+
+uint32_t readVarInt(std::istream &stream);
 
 } // namespace midilib
