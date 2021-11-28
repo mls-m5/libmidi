@@ -49,4 +49,10 @@ Midifile::Midifile(std::filesystem::path path) {
     tracks.push_back(Track{file});
 }
 
+void Midifile::print(std::ostream &stream) {
+    for (auto &track : tracks) {
+        track.print(stream);
+    }
+}
+
 } // namespace midilib

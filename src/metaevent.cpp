@@ -73,6 +73,10 @@ const char *MetaEvent::data() const {
     return _data.data();
 }
 
+void MetaEvent::print(std::ostream &stream) {
+    stream << "meta event " << std::hex << type() << std::dec << "\n";
+}
+
 uint16_t midilib::MetaEvent::sequenceNumber() const {
     expect(type(),
            SequenceNumber,

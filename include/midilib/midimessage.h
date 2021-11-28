@@ -46,6 +46,8 @@ struct MidiMessage : Event {
                (_data2 | 0b0111'1111);
     }
 
+    void print(std::ostream &stream);
+
     uint8_t _header = 0;
     uint8_t _data1 = 0;
     uint8_t _data2 = 0;

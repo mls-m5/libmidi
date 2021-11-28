@@ -4,6 +4,7 @@
 #include "midimessage.h"
 #include <cstdint>
 #include <iosfwd>
+#include <variant>
 #include <vector>
 
 namespace midilib {
@@ -14,8 +15,10 @@ struct Track {
     uint32_t size;
 
     // Should always be first
-    std::vector<MetaEvent> metaEvents;
-    std::vector<MidiMessage> messages;
+    std::vector<std::variant<MidiMessage, MetaEvent>> events;
+
+    // Pretty print to screen
+    void print(std::ostream &stream);
 };
 
 } // namespace midilib

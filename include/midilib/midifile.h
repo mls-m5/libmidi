@@ -28,6 +28,8 @@ struct Midifile {
     Midifile(std::filesystem::path path);
 
     std::vector<Track> tracks;
+
+    void print(std::ostream &stream);
 };
 
 } // namespace midilib

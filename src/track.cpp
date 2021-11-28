@@ -18,17 +18,23 @@ Track::Track(std::istream &file) {
         auto c = file.peek();
 
         if (c == 0xff) {
-            metaEvents.emplace_back(file, t);
-            if (metaEvents.back().type() == MetaEvent::EndOfTrack) {
+            events.emplace_back(MetaEvent{file, t});
+            if (get<MetaEvent>(events.back()).type() == MetaEvent::EndOfTrack) {
                 break;
             }
         }
         else if (c & 0b1000'0000) {
-            messages.emplace_back(file, t);
+            events.emplace_back(MidiMessage{file, t});
         }
         else {
             throw std::runtime_error{"unknown event type " + std::to_string(c)};
         }
+    }
+}
+
+void Track::print(std::ostream &stream) {
+    for (auto &event : events) {
+        std::visit([&stream](auto &event) { event.print(stream); }, event);
     }
 }
 

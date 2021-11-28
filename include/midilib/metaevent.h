@@ -47,6 +47,8 @@ struct MetaEvent : public Event {
     // Get the raw data of the event
     const char *data() const;
 
+    void print(std::ostream &stream);
+
 private:
     Type _type = Error;
     std::vector<char> _data;

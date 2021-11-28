@@ -21,4 +21,10 @@ MidiMessage::MidiMessage(std::istream &file, DeltaTimeT delta)
     }
 }
 
+void MidiMessage::print(std::ostream &stream) {
+    stream << "midi message time = " << std::dec << delta() << "   type = 0x"
+           << std::hex << (_header >> 4 << 4) << "\n"
+           << std::dec;
+}
+
 } // namespace midilib
