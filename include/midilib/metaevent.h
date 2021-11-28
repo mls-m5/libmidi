@@ -11,6 +11,8 @@ namespace midilib {
 struct MetaEvent : public Event {
     MetaEvent(std::istream &file, DeltaTimeT time);
 
+    void save(std::ostream &file) const;
+
     // FF
     enum Type {
         SequenceNumber = 0x00,
@@ -47,9 +49,9 @@ struct MetaEvent : public Event {
     // Get the raw data of the event
     const char *data() const;
 
-    void print(std::ostream &stream);
+    void print(std::ostream &stream) const;
 
-    std::string_view name();
+    std::string_view name() const;
 
 private:
     Type _type = Error;

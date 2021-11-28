@@ -17,8 +17,10 @@ struct Track {
     // Should always be first
     std::vector<std::variant<MidiMessage, MetaEvent>> events;
 
+    void save(std::ostream &stream) const;
+
     // Pretty print to screen
-    void print(std::ostream &stream);
+    void print(std::ostream &stream) const;
 };
 
 } // namespace midilib

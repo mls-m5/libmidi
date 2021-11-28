@@ -61,6 +61,37 @@ MetaEvent::MetaEvent(std::istream &file, DeltaTimeT time)
     }
 }
 
+void MetaEvent::save(std::ostream &file) const {
+    saveVarInt(file, delta());
+    saveInt<char, char>(file, 0xff);
+    saveInt<Type, uint8_t>(file, type());
+
+    switch (_type) {
+    case SequenceNumber:
+        saveVarInt(file, 2);
+        file.write(_data.data(), 2);
+
+        break;
+    case TextEvent:
+    case CopyrightNotice:
+    case TrackName:
+    case InstrumentName:
+    case Lyric:
+    case Marker:
+    case CuePoint:
+    case SequencerSpecificEvent:
+        saveVarInt(file, _data.size());
+        file.write(_data.data(), _data.size());
+        break;
+    case EndOfTrack:
+        saveVarInt(file, 0);
+        break;
+    default:
+        throw std::runtime_error{"meta event " + std::to_string(_type) +
+                                 " not implemented"};
+    }
+}
+
 MetaEvent::Type MetaEvent::type() const {
     return _type;
 }
@@ -73,7 +104,7 @@ const char *MetaEvent::data() const {
     return _data.data();
 }
 
-void MetaEvent::print(std::ostream &stream) {
+void MetaEvent::print(std::ostream &stream) const {
     stream << "meta event " << std::hex << type() << std::dec;
     stream << " " << name();
 
@@ -96,7 +127,7 @@ void MetaEvent::print(std::ostream &stream) {
     stream << "\n";
 }
 
-std::string_view MetaEvent::name() {
+std::string_view MetaEvent::name() const {
 #define CASE(name)                                                             \
     case name:                                                                 \
         return #name;

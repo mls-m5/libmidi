@@ -18,38 +18,25 @@ struct MidiMessage : Event {
 
     MidiMessage(std::istream &file, DeltaTimeT);
 
-    Type type() const {
-        return static_cast<Type>(_header >> 4);
-    }
+    void save(std::ostream &file) const;
 
-    uint8_t channel() const {
-        return _header & 0b1111;
-    }
+    Type type() const;
 
-    uint8_t key() const {
-        return _data1;
-    }
+    uint8_t channel() const;
 
-    uint8_t controlNumber() const {
-        return key();
-    }
+    uint8_t key() const;
 
-    uint8_t velocity() const {
-        return _data2;
-    }
+    uint8_t controlNumber() const;
 
-    uint8_t preassure() const {
-        return velocity();
-    }
+    uint8_t velocity() const;
 
-    uint16_t pitchWheelValue() const { // Note that not all bits are used
-        return ((static_cast<uint16_t>(_data1) | 0b0111'1111) << 7) +
-               (_data2 | 0b0111'1111);
-    }
+    uint8_t preassure() const;
 
-    void print(std::ostream &stream);
+    uint16_t pitchWheelValue() const;
 
-    std::string_view name();
+    void print(std::ostream &stream) const;
+
+    std::string_view name() const;
 
     uint8_t _header = 0;
     uint8_t _data1 = 0;

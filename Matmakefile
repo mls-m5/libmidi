@@ -24,11 +24,17 @@ midimessage_test
   src = test/midimessage_test.cpp
   command = [test]
 
+test
+  in =
+     @metaevent_test
+     @midimessage_test
+  includes =
+     src
+
 all
   in =
      @main
-     @metaevent_test
-     @midimessage_test
+     @test
   includes =
     include
   config =

@@ -18,6 +18,10 @@ struct FileHeaderChunk {
 
     FileHeaderChunk(std::istream &file);
 
+    void save(std::ostream &file) const;
+
+    void print(std::ostream &file);
+
     uint32_t size;
     Format format;
     uint16_t ntks;
@@ -25,7 +29,12 @@ struct FileHeaderChunk {
 };
 
 struct Midifile {
-    Midifile(std::filesystem::path path);
+    FileHeaderChunk header;
+
+    Midifile(std::istream &file);
+    static Midifile load(std::filesystem::path path);
+
+    void save(std::filesystem::path path) const;
 
     std::vector<Track> tracks;
 

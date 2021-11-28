@@ -9,20 +9,15 @@ namespace midilib {
 //! Convert some bytes (in midi disk format) to a int in ram
 template <typename ResultType, typename LoadType = ResultType>
 ResultType readInt(const char *data, ResultType *retPtr = 0) {
-    constexpr size_t size = sizeof(LoadType);
+    constexpr auto size = sizeof(LoadType);
 
     auto ret = LoadType{};
 
-    //    if constexpr (std::endian::native == std::endian::little) {
     for (size_t i = 0; i < size; ++i) {
         char c = data[i];
         ret <<= 8;
         ret += c;
     }
-    //    }
-    //    else {
-    //        std::memcpy(&ret, data, size);
-    //    }
 
     if (retPtr) {
         return *retPtr = static_cast<ResultType>(ret);
@@ -41,21 +36,16 @@ ResultType readInt(const char *data, ResultType *retPtr = 0) {
 //!        size = readInt<uint32_t>(file); // version 2
 template <typename ResultType, typename LoadType = ResultType>
 ResultType readInt(std::istream &stream, ResultType *retPtr = 0) {
-    constexpr size_t size = sizeof(LoadType);
+    constexpr auto size = sizeof(LoadType);
 
     auto ret = LoadType{};
 
-    //    if constexpr (std::endian::native == std::endian::little) {
     for (size_t i = 0; i < size; ++i) {
         char c;
         stream.read(&c, 1);
         ret <<= 8;
         ret += c;
     }
-    //    }
-    //    else {
-    //        stream.read(&ret, size);
-    //    }
 
     if (retPtr) {
         return *retPtr = static_cast<ResultType>(ret);
@@ -64,6 +54,21 @@ ResultType readInt(std::istream &stream, ResultType *retPtr = 0) {
     return static_cast<ResultType>(ret);
 }
 
+// Read variable sized integer according to midi specification
 uint32_t readVarInt(std::istream &stream);
+
+// Save integer in midi format
+template <typename Type, typename IntType = Type>
+void saveInt(std::ostream &stream, Type in) {
+    constexpr auto size = sizeof(IntType);
+    auto value = static_cast<IntType>(in);
+
+    for (size_t i = 0; i < size; ++i) {
+        auto c = static_cast<char>((value >> 8 * (size - 1 - i)) & 0xff);
+        stream.write(&c, 1);
+    }
+}
+
+void saveVarInt(std::ostream &stream, uint32_t);
 
 } // namespace midilib

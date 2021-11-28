@@ -21,12 +21,56 @@ MidiMessage::MidiMessage(std::istream &file, DeltaTimeT delta)
     }
 }
 
-void MidiMessage::print(std::ostream &stream) {
+void MidiMessage::save(std::ostream &file) const {
+    saveVarInt(file, delta());
+    saveInt(file, _header);
+    switch (type()) {
+    case ProgramChange:
+    case ChannelPressure:
+        saveInt(file, _data1);
+        break;
+    default:
+        saveInt(file, _data1);
+        saveInt(file, _data2);
+    }
+}
+
+MidiMessage::Type MidiMessage::type() const {
+    return static_cast<Type>(_header >> 4);
+}
+
+uint8_t MidiMessage::channel() const {
+    return _header & 0b1111;
+}
+
+uint8_t MidiMessage::key() const {
+    return _data1;
+}
+
+uint8_t MidiMessage::controlNumber() const {
+    return key();
+}
+
+uint8_t MidiMessage::velocity() const {
+    return _data2;
+}
+
+uint8_t MidiMessage::preassure() const {
+    return velocity();
+}
+
+uint16_t MidiMessage::pitchWheelValue()
+    const { // Note that not all bits are used
+    return ((static_cast<uint16_t>(_data1) | 0b0111'1111) << 7) +
+           (_data2 | 0b0111'1111);
+}
+
+void MidiMessage::print(std::ostream &stream) const {
     stream << "midi message " << std::hex << (_header >> 4 << 4) << " "
            << name() << " time = " << std::dec << delta() << "\n";
 }
 
-std::string_view MidiMessage::name() {
+std::string_view MidiMessage::name() const {
     switch (type()) {
     case NoteOff:
         return "NoteOff";
@@ -43,6 +87,7 @@ std::string_view MidiMessage::name() {
     case PitchWheelChange:
         return "PitchWheelChange";
     }
+    return {};
 }
 
 } // namespace midilib
