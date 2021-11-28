@@ -33,6 +33,7 @@ Track::Track(std::istream &file) {
 }
 
 void Track::print(std::ostream &stream) {
+    stream << "\nTrack\n";
     for (auto &event : events) {
         std::visit([&stream](auto &event) { event.print(stream); }, event);
     }

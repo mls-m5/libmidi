@@ -22,9 +22,27 @@ MidiMessage::MidiMessage(std::istream &file, DeltaTimeT delta)
 }
 
 void MidiMessage::print(std::ostream &stream) {
-    stream << "midi message time = " << std::dec << delta() << "   type = 0x"
-           << std::hex << (_header >> 4 << 4) << "\n"
-           << std::dec;
+    stream << "midi message " << std::hex << (_header >> 4 << 4) << " "
+           << name() << " time = " << std::dec << delta() << "\n";
+}
+
+std::string_view MidiMessage::name() {
+    switch (type()) {
+    case NoteOff:
+        return "NoteOff";
+    case NoteOn:
+        return "NoteOn";
+    case PolyphohnicKeyPressure:
+        return "PolyphohnicKeyPressure";
+    case ControlChange:
+        return "ControlChange";
+    case ProgramChange:
+        return "ProgramChange";
+    case ChannelPressure:
+        return "ChannelPressure";
+    case PitchWheelChange:
+        return "PitchWheelChange";
+    }
 }
 
 } // namespace midilib

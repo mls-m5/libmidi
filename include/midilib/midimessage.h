@@ -1,6 +1,7 @@
 #pragma once
 
 #include "event.h"
+#include <string_view>
 
 namespace midilib {
 
@@ -47,6 +48,8 @@ struct MidiMessage : Event {
     }
 
     void print(std::ostream &stream);
+
+    std::string_view name();
 
     uint8_t _header = 0;
     uint8_t _data1 = 0;

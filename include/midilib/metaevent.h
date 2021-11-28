@@ -49,6 +49,8 @@ struct MetaEvent : public Event {
 
     void print(std::ostream &stream);
 
+    std::string_view name();
+
 private:
     Type _type = Error;
     std::vector<char> _data;

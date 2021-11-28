@@ -74,7 +74,49 @@ const char *MetaEvent::data() const {
 }
 
 void MetaEvent::print(std::ostream &stream) {
-    stream << "meta event " << std::hex << type() << std::dec << "\n";
+    stream << "meta event " << std::hex << type() << std::dec;
+    stream << " " << name();
+
+    switch (_type) {
+    case TextEvent:
+    case CopyrightNotice:
+    case TrackName:
+    case InstrumentName:
+    case Lyric:
+    case Marker:
+    case CuePoint:
+        stream << " '" << text() << "'";
+        break;
+    default:
+        break;
+    }
+
+    stream << " time = " << delta();
+
+    stream << "\n";
+}
+
+std::string_view MetaEvent::name() {
+#define CASE(name)                                                             \
+    case name:                                                                 \
+        return #name;
+
+    switch (_type) {
+        CASE(SequenceNumber)
+        CASE(TextEvent)
+        CASE(CopyrightNotice)
+        CASE(TrackName)
+        CASE(InstrumentName)
+        CASE(Lyric)
+        CASE(Marker)
+        CASE(CuePoint)
+
+        CASE(EndOfTrack)
+
+        CASE(SequencerSpecificEvent)
+    default:
+        return "no name";
+    }
 }
 
 uint16_t midilib::MetaEvent::sequenceNumber() const {
