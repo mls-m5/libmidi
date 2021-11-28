@@ -4,7 +4,9 @@
 #include <iosfwd>
 #include <vector>
 
-namespace midifile {
+#include "metaevent.h"
+
+namespace midilib {
 
 struct FileHeaderChunk {
     enum Format {
@@ -29,6 +31,8 @@ struct TrackChunk {
     TrackChunk(std::istream &file);
 
     uint32_t size;
+
+    std::vector<MetaEvent> metaEvents;
 };
 
 struct Midifile {
@@ -37,4 +41,4 @@ struct Midifile {
     std::vector<TrackChunk> tracks;
 };
 
-} // namespace midifile
+} // namespace midilib

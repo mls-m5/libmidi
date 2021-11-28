@@ -1,18 +1,31 @@
 
 # using matmake2: https://github.com/laserskold/matmake2
 
+midilib
+  out = midilib
+  src = src/*.cpp
+  command = [static]
+
 main
+  in = @midilib
   out = main
-  src =
-    src/*.cpp
+  src = src/main/*.cpp
+  command = [exe]
+
+metaevent_test
+  in = @midilib
+  out = metaevent_test
+  src = test/metaevent_test.cpp
+  command = [exe]
+
+all
+  in =
+     @main
+     @metaevent_test
+  includes =
+    include
   config =
     c++2a
     Wall
-  command = [exe]
   copy = data
-
-all
-  in = @main
-  includes =
-    include
 
