@@ -9,7 +9,7 @@
 namespace midilib {
 
 struct MetaEvent : public Event {
-    MetaEvent(std::istream &file);
+    MetaEvent(std::istream &file, DeltaTimeT time);
 
     // FF
     enum Type {
@@ -26,22 +26,26 @@ struct MetaEvent : public Event {
 
         EndOfTrack = 0x2f,
 
+        SequencerSpecificEvent = 0x7f,
+
         Error = 0xffff,
         NotImplemented = 0xffff - 1,
     };
 
+    // Get primary event type
     Type type() const;
+
+    // For sequence number event only
+    uint16_t sequenceNumber() const;
+
+    // Text for text events
+    std::string_view text() const;
 
     // Get size of data
     size_t size() const;
 
     // Get the raw data of the event
     const char *data() const;
-
-    // For sequence number event
-    uint16_t sequenceNumber() const;
-
-    std::string_view text() const;
 
 private:
     Type _type = Error;

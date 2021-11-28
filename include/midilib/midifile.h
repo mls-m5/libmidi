@@ -1,10 +1,11 @@
 #pragma once
 
+#include "metaevent.h"
+#include "midimessage.h"
+#include "track.h"
 #include <filesystem>
 #include <iosfwd>
 #include <vector>
-
-#include "metaevent.h"
 
 namespace midilib {
 
@@ -23,22 +24,10 @@ struct FileHeaderChunk {
     uint16_t division;
 };
 
-// struct Event {
-//     Event(std::istream &file);
-// };
-
-struct TrackChunk {
-    TrackChunk(std::istream &file);
-
-    uint32_t size;
-
-    std::vector<MetaEvent> metaEvents;
-};
-
 struct Midifile {
     Midifile(std::filesystem::path path);
 
-    std::vector<TrackChunk> tracks;
+    std::vector<Track> tracks;
 };
 
 } // namespace midilib

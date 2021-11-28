@@ -6,14 +6,18 @@
 namespace midilib {
 
 struct Event {
+    using DeltaTimeT = uint32_t;
+
     Event(std::istream &file);
 
-    uint32_t delta() const {
+    Event(DeltaTimeT delta);
+
+    DeltaTimeT delta() const {
         return _delta;
     }
 
 private:
-    uint32_t _delta;
+    DeltaTimeT _delta;
 };
 
 } // namespace midilib

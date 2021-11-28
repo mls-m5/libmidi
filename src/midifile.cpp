@@ -1,6 +1,7 @@
 
 #include "midilib/midifile.h"
 #include "bitops.h"
+#include "verification.h"
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -9,16 +10,6 @@
 // http://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html
 
 namespace midilib {
-
-bool verifyHeader(std::istream &file, const std::array<char, 4> header) {
-    auto data = std::array<char, 4>{};
-    file.read(data.data(), 4);
-
-    if (header != data) {
-        return false;
-    }
-    return true;
-}
 
 FileHeaderChunk::FileHeaderChunk(std::istream &file) {
     constexpr auto header = std::array<char, 4>{'M', 'T', 'h', 'd'};
@@ -51,19 +42,11 @@ Midifile::Midifile(std::filesystem::path path) {
 
     auto header = FileHeaderChunk{file};
 
-    for (auto track = TrackChunk{file}; track.size; track = TrackChunk{file}) {
+    for (auto track = Track{file}; track.size; track = Track{file}) {
         tracks.push_back(std::move(track));
     }
-}
 
-TrackChunk::TrackChunk(std::istream &file) {
-    constexpr auto header = std::array<char, 4>{'M', 'T', 'r', 'k'};
-    if (!verifyHeader(file, header)) {
-        size = 0;
-        return;
-    }
-
-    readInt(file, &size);
+    tracks.push_back(Track{file});
 }
 
 } // namespace midilib

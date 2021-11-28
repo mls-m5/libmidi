@@ -12,8 +12,8 @@ void expect(char value, char expected, std::string_view message) {
     }
 }
 
-MetaEvent::MetaEvent(std::istream &file)
-    : Event(file) {
+MetaEvent::MetaEvent(std::istream &file, DeltaTimeT time)
+    : Event{time} {
     {
         unsigned char c;
         file >> c;
@@ -42,12 +42,22 @@ MetaEvent::MetaEvent(std::istream &file)
     case InstrumentName:
     case Lyric:
     case Marker:
-    case CuePoint: {
-        //        auto len = readInt<uint16_t>(file);
+    case CuePoint:
+    case SequencerSpecificEvent: {
         auto len = readVarInt(file);
         _data.resize(len);
         file.read(_data.data(), _data.size());
+
     } break;
+
+    case EndOfTrack:
+        readInt(file, &c);
+        expect(c, 0, "Bad formatted End of Track event");
+        break;
+
+    default:
+        throw std::runtime_error{"meta event " + std::to_string(_type) +
+                                 " not implemented"};
     }
 }
 

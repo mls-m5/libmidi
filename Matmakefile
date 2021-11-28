@@ -16,12 +16,19 @@ metaevent_test
   in = @midilib
   out = metaevent_test
   src = test/metaevent_test.cpp
-  command = [exe]
+  command = [test]
+
+midimessage_test
+  in = @midilib
+  out = midimessage_test
+  src = test/midimessage_test.cpp
+  command = [test]
 
 all
   in =
      @main
      @metaevent_test
+     @midimessage_test
   includes =
     include
   config =
