@@ -51,11 +51,9 @@ void FileHeaderChunk::print(std::ostream &stream) {
 Midifile::Midifile(std::istream &file)
     : header{file} {
 
-    for (auto track = Track{file}; track.size; track = Track{file}) {
+    for (auto track = Track{file}; !track.events.empty(); track = Track{file}) {
         tracks.push_back(std::move(track));
     }
-
-    tracks.push_back(Track{file});
 }
 
 Midifile Midifile::load(std::filesystem::path path) {

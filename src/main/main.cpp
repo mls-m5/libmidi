@@ -10,6 +10,8 @@ int main(int argc, char **argv) {
 
     midi.print(std::cout);
 
+    std::cout.flush();
+
     midi.save("testsave.midi");
 
     auto midi2 = midilib::Midifile::load("testsave.midi");

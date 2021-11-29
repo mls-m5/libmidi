@@ -24,10 +24,17 @@ midimessage_test
   src = test/midimessage_test.cpp
   command = [test]
 
+bitops_test
+  in = @midilib
+  out = bitops_test
+  src = test/bitops_test.cpp
+  command = [test]
+
 test
   in =
      @metaevent_test
      @midimessage_test
+     @bitops_test
   includes =
      src
 

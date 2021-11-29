@@ -8,7 +8,8 @@ uint32_t midilib::readVarInt(std::istream &stream) {
     char c;
 
     for (size_t i = 0; i < maxSize; ++i) {
-        stream >> c;
+        //        stream >> c;
+        stream.read(&c, 1);
         ret += (c & 0b0111'1111);
         if (!(c & 0b1000'0000)) {
             break;
@@ -27,11 +28,14 @@ void midilib::saveVarInt(std::ostream &stream, uint32_t value) {
 
     size_t num = 0;
 
-    for (size_t i = 0; i < maxSize && value; ++i) {
-        char c = (value & 0b0111'1111) | (0b1000'0000 * (value > 127));
-        data.at(maxSize - 1 - i) = c;
-        value >>= 7;
-        num = i;
+    for (size_t i = 0; i < 4; ++i) {
+        unsigned char shifted = (value >> 7 * (maxSize - 1 - i)) & 0xff;
+        unsigned char c = shifted & 0b0111'1111;
+        if (shifted && i != 3) {
+            c |= 0b1000'0000;
+            ++num;
+        }
+        data.at(i) = c;
     }
 
     stream.write(data.data() + 3 - num, num + 1);

@@ -41,10 +41,10 @@ ResultType readInt(std::istream &stream, ResultType *retPtr = 0) {
     auto ret = LoadType{};
 
     for (size_t i = 0; i < size; ++i) {
-        char c;
-        stream.read(&c, 1);
+        unsigned char c;
+        stream >> c;
         ret <<= 8;
-        ret += c;
+        ret |= c;
     }
 
     if (retPtr) {
