@@ -55,6 +55,21 @@ MetaEvent::MetaEvent(std::istream &file, DeltaTimeT time)
         expect(c, 0, "Bad formatted End of Track event");
         break;
 
+    case SetTempo:
+        readInt(file, &c);
+        expect(c, 3, "Bad formatted Set tempo event");
+        _data.resize(3);
+        file.read(_data.data(), _data.size());
+        break;
+
+    case TimeSignature:
+        readInt(file, &c);
+        expect(c, 4, "Time signature event");
+        _data.resize(6);
+        file.read(_data.data(), _data.size());
+
+        break;
+
     default:
         throw std::runtime_error{"meta event " + std::to_string(_type) +
                                  " not implemented"};
@@ -86,6 +101,14 @@ void MetaEvent::save(std::ostream &file) const {
     case EndOfTrack:
         saveVarInt(file, 0);
         break;
+    case SetTempo:
+        saveVarInt(file, 3);
+        file.write(_data.data(), _data.size());
+
+    case TimeSignature:
+        saveVarInt(file, 4);
+        file.write(_data.data(), _data.size());
+
     default:
         throw std::runtime_error{"meta event " + std::to_string(_type) +
                                  " not implemented"};
@@ -143,6 +166,9 @@ std::string_view MetaEvent::name() const {
         CASE(CuePoint)
 
         CASE(EndOfTrack)
+
+        CASE(SetTempo)
+        CASE(TimeSignature)
 
         CASE(SequencerSpecificEvent)
     default:

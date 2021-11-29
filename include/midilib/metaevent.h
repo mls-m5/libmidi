@@ -28,6 +28,9 @@ struct MetaEvent : public Event {
 
         EndOfTrack = 0x2f,
 
+        SetTempo = 0x51,
+        TimeSignature = 0x58,
+
         SequencerSpecificEvent = 0x7f,
 
         Error = 0xffff,

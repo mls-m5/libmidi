@@ -28,6 +28,8 @@ struct MidiMessage : Event {
 
     uint8_t controlNumber() const;
 
+    uint8_t controlValue() const;
+
     uint8_t velocity() const;
 
     uint8_t preassure() const;

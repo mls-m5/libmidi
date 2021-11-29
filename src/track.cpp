@@ -26,9 +26,14 @@ Track::Track(std::istream &file) {
             if (get<MetaEvent>(events.back()).type() == MetaEvent::EndOfTrack) {
                 break;
             }
+
+            get<MetaEvent>(events.back()).print(std::cout);
+            std::cout.flush();
         }
         else if (c & 0b1000'0000) {
             events.emplace_back(MidiMessage{file, t});
+            get<MidiMessage>(events.back()).print(std::cout);
+            std::cout.flush();
         }
         else {
             throw std::runtime_error{"unknown event type " + std::to_string(c)};

@@ -38,4 +38,16 @@ TEST_CASE("note off load/save") {
     EXPECT_EQ(loaded.velocity(), event.velocity());
 }
 
+TEST_CASE("control change") {
+    auto in = std::string_view{"\x04\xb0\x0a\x40"};
+    auto ss = fakeFile(in);
+
+    const auto time = readVarInt(ss);
+    auto event = MidiMessage{ss, time};
+
+    EXPECT_EQ(event.delta(), 0x04);
+    EXPECT_EQ(event.controlNumber(), 0x0a);
+    EXPECT_EQ(event.controlValue(), 0x50);
+}
+
 TEST_SUIT_END

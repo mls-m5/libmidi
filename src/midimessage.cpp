@@ -48,7 +48,11 @@ uint8_t MidiMessage::key() const {
 }
 
 uint8_t MidiMessage::controlNumber() const {
-    return key();
+    return _data1;
+}
+
+uint8_t MidiMessage::controlValue() const {
+    return _data2;
 }
 
 uint8_t MidiMessage::velocity() const {
