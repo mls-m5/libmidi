@@ -39,7 +39,7 @@ TEST_CASE("note off load/save") {
 }
 
 TEST_CASE("control change") {
-    auto in = std::string_view{"\x04\xb0\x0a\x40"};
+    auto in = std::string_view{"\x04\xb0\x0a\x40", 4};
     auto ss = fakeFile(in);
 
     const auto time = readVarInt(ss);
@@ -47,7 +47,7 @@ TEST_CASE("control change") {
 
     EXPECT_EQ(event.delta(), 0x04);
     EXPECT_EQ(event.controlNumber(), 0x0a);
-    EXPECT_EQ(event.controlValue(), 0x50);
+    EXPECT_EQ(event.controlValue(), 0x40);
 }
 
 TEST_SUIT_END

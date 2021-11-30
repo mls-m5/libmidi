@@ -14,7 +14,7 @@ ResultType readInt(const char *data, ResultType *retPtr = 0) {
     auto ret = LoadType{};
 
     for (size_t i = 0; i < size; ++i) {
-        char c = data[i];
+        unsigned char c = data[i];
         ret <<= 8;
         ret += c;
     }
@@ -41,8 +41,9 @@ ResultType readInt(std::istream &stream, ResultType *retPtr = 0) {
     auto ret = LoadType{};
 
     for (size_t i = 0; i < size; ++i) {
-        unsigned char c;
-        stream >> c;
+        char tc;
+        stream.read(&tc, 1);
+        unsigned char c = tc;
         ret <<= 8;
         ret |= c;
     }

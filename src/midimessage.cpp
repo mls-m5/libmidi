@@ -6,6 +6,7 @@ namespace midilib {
 MidiMessage::MidiMessage(std::istream &file, DeltaTimeT delta)
     : Event{delta} {
     _header = readInt<uint8_t>(file);
+
     switch (type()) {
     case ProgramChange:
     case ChannelPressure:
