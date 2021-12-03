@@ -2,9 +2,16 @@
 #include "bitops.h"
 #include <cstring>
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 namespace midilib {
+
+std::string toHex(uint32_t val) {
+    auto ss = std::stringstream{};
+    ss << std::hex << val;
+    return ss.str();
+}
 
 void expect(char value, char expected, std::string_view message) {
     if (value != expected) {
@@ -71,7 +78,7 @@ MetaEvent::MetaEvent(std::istream &file, DeltaTimeT time)
         break;
 
     default:
-        throw std::runtime_error{"meta event " + std::to_string(_type) +
+        throw std::runtime_error{"meta event 0x" + toHex(_type) +
                                  " not implemented"};
     }
 }
@@ -104,13 +111,15 @@ void MetaEvent::save(std::ostream &file) const {
     case SetTempo:
         saveVarInt(file, 3);
         file.write(_data.data(), _data.size());
+        break;
 
     case TimeSignature:
         saveVarInt(file, 4);
         file.write(_data.data(), _data.size());
+        break;
 
     default:
-        throw std::runtime_error{"meta event " + std::to_string(_type) +
+        throw std::runtime_error{"meta event 0x" + toHex(_type) +
                                  " not implemented"};
     }
 }

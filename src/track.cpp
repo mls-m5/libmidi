@@ -18,6 +18,7 @@ Track::Track(std::istream &file) {
 
     readInt(file, &size);
 
+    uint8_t lastHeader = 0;
     for (auto t = readVarInt(file);; t = readVarInt(file)) {
         auto c = file.peek();
 
@@ -27,13 +28,12 @@ Track::Track(std::istream &file) {
                 break;
             }
 
-            get<MetaEvent>(events.back()).print(std::cout);
-            std::cout.flush();
+            lastHeader = 0;
         }
-        else if (c & 0b1000'0000) {
-            events.emplace_back(MidiMessage{file, t});
-            get<MidiMessage>(events.back()).print(std::cout);
-            std::cout.flush();
+        else if (lastHeader || (c & 0b1000'0000)) {
+            events.emplace_back(MidiMessage{file, t, lastHeader});
+            auto &event = get<MidiMessage>(events.back());
+            lastHeader = event.header();
         }
         else {
             throw std::runtime_error{"unknown event type " + std::to_string(c)};

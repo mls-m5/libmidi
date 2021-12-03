@@ -16,30 +16,23 @@ struct MidiMessage : Event {
         PitchWheelChange = 0b1110,
     };
 
-    MidiMessage(std::istream &file, DeltaTimeT);
+    MidiMessage(std::istream &file, DeltaTimeT, uint8_t lastHeader = 0);
 
     void save(std::ostream &file) const;
 
-    Type type() const;
-
-    uint8_t channel() const;
-
-    uint8_t key() const;
-
-    uint8_t controlNumber() const;
-
-    uint8_t controlValue() const;
-
-    uint8_t velocity() const;
-
-    uint8_t preassure() const;
-
-    uint16_t pitchWheelValue() const;
-
+    auto header() const -> uint8_t;
+    auto type() const -> Type;
+    auto channel() const -> uint8_t;
+    auto key() const -> uint8_t;
+    auto controlNumber() const -> uint8_t;
+    auto controlValue() const -> uint8_t;
+    auto velocity() const -> uint8_t;
+    auto preassure() const -> uint8_t;
+    auto pitchWheelValue() const -> uint16_t;
     void print(std::ostream &stream) const;
+    auto name() const -> std::string_view;
 
-    std::string_view name() const;
-
+private:
     uint8_t _header = 0;
     uint8_t _data1 = 0;
     uint8_t _data2 = 0;

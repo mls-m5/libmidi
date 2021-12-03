@@ -50,4 +50,16 @@ TEST_CASE("control change") {
     EXPECT_EQ(event.controlValue(), 0x40);
 }
 
+TEST_CASE("chained messages") {
+    auto in = std::string_view{"\x04\x0a\x40", 3};
+    auto ss = fakeFile(in);
+
+    const auto time = readVarInt(ss);
+    auto event = MidiMessage{ss, time, 0xb0};
+
+    EXPECT_EQ(event.delta(), 0x04);
+    EXPECT_EQ(event.controlNumber(), 0x0a);
+    EXPECT_EQ(event.controlValue(), 0x40);
+}
+
 TEST_SUIT_END

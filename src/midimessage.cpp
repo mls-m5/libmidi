@@ -3,9 +3,16 @@
 
 namespace midilib {
 
-MidiMessage::MidiMessage(std::istream &file, DeltaTimeT delta)
+MidiMessage::MidiMessage(std::istream &file,
+                         DeltaTimeT delta,
+                         uint8_t lastHeader)
     : Event{delta} {
     _header = readInt<uint8_t>(file);
+
+    if (!(_header & 0b1000'0000)) {
+        _header = lastHeader;
+        file.unget();
+    }
 
     switch (type()) {
     case ProgramChange:
@@ -34,6 +41,10 @@ void MidiMessage::save(std::ostream &file) const {
         saveInt(file, _data1);
         saveInt(file, _data2);
     }
+}
+
+uint8_t MidiMessage::header() const {
+    return _header;
 }
 
 MidiMessage::Type MidiMessage::type() const {
